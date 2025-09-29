@@ -1,6 +1,16 @@
 name: secret_workflow_repository
 
-on: [push]
+on:
+  workflow_dispatch:
+    inputs:
+      target_environment:
+        description: 'Environment to run tests against'
+        type: choice
+        options:
+          - staging
+          - qa
+        required: true
+        default: 'staging'
 
 jobs:
   job1:

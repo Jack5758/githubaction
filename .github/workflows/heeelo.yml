@@ -1,0 +1,30 @@
+name: Run E2E Tests on a Target Environment
+
+# 1. Change the trigger to 'workflow_dispatch'
+on:
+  workflow_dispatch:
+    # 2. Create a dropdown list UI to switch env
+    inputs:
+      target_environment:
+        description: 'Environment to run tests against'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - preprod
+
+jobs:
+  test-on-target-env:
+    runs-on: ubuntu-latest
+
+    # 3. Use the input to set the environment dynamically
+    environment: ${{ github.event.inputs.target_environment }}
+
+    steps:
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          # This secret will now be pulled from the selected environment
+          # (e.g. from 'preprod' secrets if you selected 'preprod')
+          BASE_URL: ${{ secrets.BASE_URL }}
